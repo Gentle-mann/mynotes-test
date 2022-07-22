@@ -28,12 +28,9 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register'),
+      appBar: AppBar(
+        title: const Text('Register'),
       ),
-      body: Scaffold(
-        appBar: AppBar(
-            title: const Text('Login')
-        ),
         body: Column(
           children: [
             TextField(
@@ -56,10 +53,8 @@ class _RegisterViewState extends State<RegisterView> {
             ),
             TextButton(
                 onPressed: () async {
-
                   final email = _email.text;
                   final password = _password.text;
-
                   try {
                     final userCredentials =
                     await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -78,9 +73,6 @@ class _RegisterViewState extends State<RegisterView> {
                     else if (e.code == 'invalid-email'){
                       print('Invalid email entered');
                     }
-
-
-
                   }
                 },
                 child: const Text("Register"),
@@ -94,7 +86,6 @@ class _RegisterViewState extends State<RegisterView> {
             )
           ],
         ),
-      ),
-    );
+      );
   }
 }
