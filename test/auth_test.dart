@@ -9,47 +9,50 @@ void main() {
     test('Should not be initialized to begin with!', () {
       expect(provider.isInitialized, false);
     });
-    
+
     test('Cannot logout if not initialized', () {
-      expect(
-        provider.logOut(),
-        throwsA(const TypeMatcher<NotInitializedException>())
-      );
+      expect(provider.logOut(),
+          throwsA(const TypeMatcher<NotInitializedException>()));
     });
-    
-    test('Should be able to be initialized', () async{
+
+    test('Should be able to be initialized', () async {
       await provider.initialize();
       expect(provider.isInitialized, true);
     });
-    
+
     test('User should be null upon initialization', () {
       expect(provider.currentUser, null);
     });
-    
-    test('Should be able to initialize in less than 2 second', () async {
-      await provider.initialize();
-      expect(provider.isInitialized, true);
 
-    }, timeout: const Timeout(Duration(seconds: 2)),
+    test(
+      'Should be able to initialize in less than 2 second',
+      () async {
+        await provider.initialize();
+        expect(provider.isInitialized, true);
+      },
+      timeout: const Timeout(Duration(seconds: 2)),
     );
 
     test('createUser should delegate to login function', () async {
       final badEmailUser = provider.createUser(
         email: 'foo@bar.com',
         password: 'anypassword',
-      ); expect(
+      );
+      expect(
         badEmailUser,
         throwsA(const TypeMatcher<UserNotFoundAuthException>()),
-      ); final badPasswordUser = provider.createUser(
+      );
+      final badPasswordUser = provider.createUser(
         email: 'someone@gmail.com',
         password: 'foobar',
-      ); expect(
+      );
+      expect(
         badPasswordUser,
         throwsA(const TypeMatcher<WrongPasswordAuthException>()),
       );
       final user = await provider.createUser(
-          email: 'food',
-          password: 'bar',
+        email: 'food',
+        password: 'bar',
       );
       expect(provider.currentUser, user);
       expect(user.isEmailVerified, false);
@@ -64,21 +67,21 @@ void main() {
     test('Should be able to logout and login again', () async {
       await provider.logOut();
       await provider.logIn(
-          email: 'email@gmail.com',
-          password: 'pass_word',
-      ); final user = provider.currentUser;
+        email: 'email@gmail.com',
+        password: 'pass_word',
+      );
+      final user = provider.currentUser;
       expect(user, isNotNull);
     });
   });
 }
 
-
 class NotInitializedException implements Exception {}
 
 class MockAuthProvider implements AuthProvider {
-
   AuthUser? _user;
   var _isInitialized = false;
+
   bool get isInitialized => _isInitialized;
 
   @override
@@ -86,12 +89,9 @@ class MockAuthProvider implements AuthProvider {
     required String email,
     required String password,
   }) async {
-   if (!_isInitialized) throw NotInitializedException();
-   await Future.delayed(const Duration(seconds: 1));
-   return logIn(
-       email: email,
-       password: password
-   );
+    if (!_isInitialized) throw NotInitializedException();
+    await Future.delayed(const Duration(seconds: 1));
+    return logIn(email: email, password: password);
   }
 
   @override
@@ -112,7 +112,11 @@ class MockAuthProvider implements AuthProvider {
     if (email == 'foo@bar.com') throw UserNotFoundAuthException();
     if (password == 'foobar') throw WrongPasswordAuthException();
 
-    const user = AuthUser(isEmailVerified: false, email: 'foo@ishaq.com');
+    const user = AuthUser(
+      isEmailVerified: false,
+      email: 'foo@ishaq.com',
+      id: 'my_id',
+    );
     _user = user;
     return Future.value(user);
   }
@@ -131,8 +135,11 @@ class MockAuthProvider implements AuthProvider {
     final user = _user;
 
     if (user == null) throw UserNotFoundAuthException();
-    const newUser = AuthUser(isEmailVerified: true, email: 'ishaq@bar.com');
+    const newUser = AuthUser(
+      isEmailVerified: true,
+      email: 'ishaq@bar.com',
+      id: 'my_id',
+    );
     _user = newUser;
   }
-
 }
