@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mynotes/constants/routes.dart';
-import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_event.dart';
 
@@ -19,27 +17,29 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       appBar: AppBar(
         title: const Text('Verify Email'),
       ),
-      body: Column(
-        children: [
-          const Text("Check your inbox. We've sent you an email Verification."),
-          const Text(
-              "If you haven't received a verification email yet, press the button below."),
-          TextButton(
-            onPressed: () {
-              context.read<AuthBloc>().add(
-                    const AuthEventSendEmailVerification(),
-                  );
-            },
-            child: const Text('Send email verification'),
-          ),
-          TextButton(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const Text("Check your inbox. We've sent you an email Verification."),
+            const Text(
+                "If you haven't received a verification email yet, press the button below."),
+            TextButton(
               onPressed: () {
                 context.read<AuthBloc>().add(
-                      const AuthEventLogOut(),
+                      const AuthEventSendEmailVerification(),
                     );
               },
-              child: const Text('Restart'))
-        ],
+              child: const Text('Send email verification'),
+            ),
+            TextButton(
+                onPressed: () {
+                  context.read<AuthBloc>().add(
+                        const AuthEventLogOut(),
+                      );
+                },
+                child: const Text('Restart'))
+          ],
+        ),
       ),
     );
   }
